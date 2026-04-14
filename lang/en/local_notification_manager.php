@@ -1,4 +1,26 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * English strings for local_notification_manager.
+ *
+ * @package    local_notification_manager
+ * @copyright  2024 Developer
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 defined('MOODLE_INTERNAL') || die();
 
 $string['pluginname'] = 'Notification Manager';
@@ -50,3 +72,15 @@ $string['confirm_move_trash'] = 'Are you sure you want to move the selected noti
 $string['confirm_delete_permanently'] = 'Are you sure you want to PERMANENTLY delete the selected notifications? This action cannot be undone.';
 $string['confirm_restore'] = 'Are you sure you want to restore the selected notifications?';
 $string['cleanup_trash_task'] = 'Cleanup old notifications from trash';
+$string['invalid_user_id'] = 'Invalid user ID.';
+$string['no_notifications_selected'] = 'No notifications selected.';
+$string['unknown_action'] = 'Unknown action.';
+$string['no_matching_notifications'] = 'No matching notifications found for this user.';
+
+// Privacy strings
+$string['privacy:metadata:trash'] = 'The notification manager trash stores details about soft-deleted notifications for restoration purposes.';
+$string['privacy:metadata:trash:useridto'] = 'The ID of the user that the notification was sent to.';
+$string['privacy:metadata:trash:subject'] = 'The subject line of the notification.';
+$string['privacy:metadata:trash:component'] = 'The Moodle component that generated the notification.';
+$string['privacy:metadata:trash:timecreated'] = 'The timestamp when the notification was originally created.';
+$string['privacy:metadata:trash:timedeleted'] = 'The timestamp when the notification was soft-deleted to the trash.';

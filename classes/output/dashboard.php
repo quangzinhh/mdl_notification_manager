@@ -1,4 +1,26 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * Dashboard output class.
+ *
+ * @package    local_notification_manager
+ * @copyright  2024 Developer
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 namespace local_notification_manager\output;
 
@@ -97,9 +119,13 @@ class dashboard implements renderable, templatable {
         if (!empty($topuserrecords)) {
             $userids = array_keys($topuserrecords);
             list($userinsql, $userparams) = $DB->get_in_or_equal($userids);
-            // Fetch users
-            $users = $DB->get_records_select('user', "id $userinsql", $userparams, '', 'id, firstname, lastname, picture, email');
-            
+            // Fetch users using recordset for memory safety
+            $rs = $DB->get_recordset_select('user', "id $userinsql", $userparams, '', 'id, firstname, lastname, picture, email');
+            $users = [];
+            foreach ($rs as $u) {
+                $users[$u->id] = $u;
+            }
+            $rs->close();            
             // Generate user details
             foreach ($topuserrecords as $userid => $record) {
                 if (isset($users[$userid])) {

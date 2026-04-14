@@ -14,6 +14,14 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * Script to manage notifications.
+ *
+ * @package    local_notification_manager
+ * @copyright  2024 Developer
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 require_once(__DIR__ . '/../../config.php');
 
 require_login();
@@ -22,9 +30,9 @@ $context = context_system::instance();
 require_capability('local/notification_manager:manage', $context);
 
 $userid = optional_param('userid', 0, PARAM_INT);
-$userlabel = optional_param('userlabel', '', PARAM_RAW_TRIMMED);
+$userlabel = optional_param('userlabel', '', PARAM_TEXT);
 $page = max(0, optional_param('page', 0, PARAM_INT));
-$search = optional_param('search', '', PARAM_RAW_TRIMMED);
+$search = optional_param('search', '', PARAM_TEXT);
 $filter = optional_param('filter', 'all', PARAM_ALPHA);
 
 if ($userlabel !== '') {

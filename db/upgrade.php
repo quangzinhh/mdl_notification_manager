@@ -1,4 +1,26 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * Upgrade script.
+ *
+ * @package    local_notification_manager
+ * @copyright  2024 Developer
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 defined('MOODLE_INTERNAL') || die();
 
 function xmldb_local_notification_manager_upgrade($oldversion) {
@@ -8,11 +30,11 @@ function xmldb_local_notification_manager_upgrade($oldversion) {
 
     if ($oldversion < 2024040606) {
 
-        $table = new xmldb_table('local_notification_trash');
+        $table = new xmldb_table('local_notification_manager_trash');
 
         if (!$dbman->table_exists($table)) {
 
-            // Adding fields to table local_notification_trash.
+            // Adding fields to table local_notification_manager_trash.
             $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
             $table->add_field('originalid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
             $table->add_field('useridto', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
@@ -23,14 +45,14 @@ function xmldb_local_notification_manager_upgrade($oldversion) {
             $table->add_field('timedeleted', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
             $table->add_field('rawdata', XMLDB_TYPE_TEXT, null, null, XMLDB_NOTNULL, null, null);
 
-            // Adding keys to table local_notification_trash.
+            // Adding keys to table local_notification_manager_trash.
             $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
 
-            // Adding indexes to table local_notification_trash.
+            // Adding indexes to table local_notification_manager_trash.
             $table->add_index('useridto_idx', XMLDB_INDEX_NOTUNIQUE, ['useridto']);
             $table->add_index('timedeleted_idx', XMLDB_INDEX_NOTUNIQUE, ['timedeleted']);
 
-            // Conditionally launch create table for local_notification_trash.
+            // Conditionally launch create table for local_notification_manager_trash.
             $dbman->create_table($table);
         }
 

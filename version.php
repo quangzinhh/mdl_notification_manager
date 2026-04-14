@@ -14,9 +14,17 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * Version information for the plugin.
+ *
+ * @package    local_notification_manager
+ * @copyright  2024 Developer
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2024040606;
-$plugin->release = '0.1.1';
+$plugin->version   = 2026041301;
+$plugin->release = '0.1.2';
 $plugin->requires = 2024042200;
 $plugin->component = 'local_notification_manager';

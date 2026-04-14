@@ -1,4 +1,26 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * Trash output class.
+ *
+ * @package    local_notification_manager
+ * @copyright  2024 Developer
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 namespace local_notification_manager\output;
 
@@ -76,12 +98,12 @@ class trash implements renderable, templatable {
             $sqlwhere = 'WHERE ' . implode(' AND ', $where);
         }
 
-        $totalcountsql = "SELECT COUNT(t.id) FROM {local_notification_trash} t $sqlwhere";
+        $totalcountsql = "SELECT COUNT(t.id) FROM {local_notification_manager_trash} t $sqlwhere";
         $totalcount = $DB->count_records_sql($totalcountsql, $params);
         
         $offset = $this->page * $this->perpage;
         $sql = "SELECT t.*, u.firstname, u.lastname, u.id as uuid
-                FROM {local_notification_trash} t
+                FROM {local_notification_manager_trash} t
                 LEFT JOIN {user} u ON u.id = t.useridto
                 $sqlwhere
                 ORDER BY t.timedeleted DESC";

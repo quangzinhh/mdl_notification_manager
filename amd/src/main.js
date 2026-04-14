@@ -1,3 +1,25 @@
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * Main javascript module.
+ *
+ * @module     local_notification_manager/main
+ * @copyright  2024 Developer
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 define([
     'jquery',
     'core/ajax',
@@ -39,15 +61,10 @@ define([
                 return;
             }
 
-            $.ajax({
-                url: M.cfg.wwwroot + '/local/notification_manager/search_users.php',
-                method: 'GET',
-                dataType: 'json',
-                data: {
-                    q: term,
-                    sesskey: M.cfg.sesskey
-                }
-            }).done(function(data) {
+            ajax.call([{
+                methodname: 'local_notification_manager_search_users',
+                args: { q: term }
+            }])[0].done(function(data) {
                 if (!data || !Array.isArray(data.items)) {
                     $datalist.empty();
                     return;
@@ -110,26 +127,21 @@ define([
                             selectedIds.push($(this).val());
                         });
 
-                        $.ajax({
-                            url: M.cfg.wwwroot + '/local/notification_manager/delete_notifications.php',
-                            method: 'POST',
-                            data: {
-                                sesskey: sesskey,
+                        ajax.call([{
+                            methodname: 'local_notification_manager_delete_notifications',
+                            args: {
                                 userid: userid,
                                 ids: selectedIds,
                                 action: actionType
-                            },
-                            dataType: 'json',
-                            success: function(response) {
-                                if (response.success) {
-                                    window.location.reload();
-                                } else {
-                                    notification.alert('Error', response.message);
-                                }
-                            },
-                            error: function() {
-                                notification.alert('Error', 'Failed to communicate with the server.');
                             }
+                        }])[0].done(function(response) {
+                            if (response.success) {
+                                window.location.reload();
+                            } else {
+                                notification.alert('Error', response.message);
+                            }
+                        }).fail(function(ex) {
+                            notification.alert('Error', 'Failed to communicate with the server.');
                         });
                     }
                 );
