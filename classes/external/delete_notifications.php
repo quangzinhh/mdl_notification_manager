@@ -30,10 +30,10 @@ use core_external\external_multiple_structure;
 use core_external\external_single_structure;
 use core_external\external_value;
 
-defined('MOODLE_INTERNAL') || die();
-
+/**
+ * External api to delete notifications.
+ */
 class delete_notifications extends external_api {
-
     /**
      * Returns description of method parameters
      *
@@ -89,9 +89,9 @@ class delete_notifications extends external_api {
             ];
         }
 
-        list($inorsql, $sqlparams) = $DB->get_in_or_equal($notificationids, SQL_PARAMS_NAMED, 'notif');
+        [$inorsql, $sqlparams] = $DB->get_in_or_equal($notificationids, SQL_PARAMS_NAMED, 'notif');
         $sqlparams['useridto'] = $userid;
-        
+
         $sql = "useridto = :useridto AND id $inorsql";
         $count = $DB->count_records_select('notifications', $sql, $sqlparams);
 
@@ -109,14 +109,14 @@ class delete_notifications extends external_api {
                         $trash->timeread = $rec->timeread;
                         $trash->timedeleted = time();
                         $trash->rawdata = json_encode($rec);
-                        
+
                         $DB->insert_record('local_notification_manager_trash', $trash);
                     }
                     $rs->close();
                 }
-                
+
                 $DB->delete_records_select('notifications', $sql, $sqlparams);
-                
+
                 $msgkey = ($action === 'soft') ? 'success_trashed' : 'success_deleted';
                 return [
                     'success' => true,
@@ -129,7 +129,7 @@ class delete_notifications extends external_api {
                     'message' => get_string('error_delete', 'local_notification_manager') . ' ' . $e->getMessage(),
                 ];
             }
-        } 
+        }
 
         return [
             'success' => false,

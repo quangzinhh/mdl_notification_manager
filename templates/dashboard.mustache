@@ -21,6 +21,49 @@
 
     @copyright 2024 Developer
     @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+
+    Example context (json):
+    {
+        "str": {
+            "tab_dashboard": "Dashboard",
+            "time_range": "Time range",
+            "time_7_days": "7 Days",
+            "time_30_days": "30 Days",
+            "time_90_days": "90 Days",
+            "time_all": "All time",
+            "analytic_engagement": "Engagement",
+            "analytic_total": "Total",
+            "analytic_unread_rate": "Unread rate",
+            "analytic_read": "Read",
+            "analytic_unread": "Unread",
+            "analytic_top_users": "Top users",
+            "analytic_popular_types": "Popular types"
+        },
+        "engagement": {
+            "total": 100,
+            "chart_arc": 90,
+            "unread_rate": 25,
+            "read": 75,
+            "unread": 25
+        },
+        "has_topusers": true,
+        "topusers": [
+            {
+                "profileimageurl": "https://example.com/img.jpg",
+                "fullname": "John Doe",
+                "count": 10
+            }
+        ],
+        "has_populartypes": true,
+        "populartypes": [
+            {
+                "component": "moodle",
+                "count": 50,
+                "percent": 50,
+                "color": "#e74c3c"
+            }
+        ]
+    }
 }}
 <div class="local-notification-dashboard-tab" id="local-notification-dashboard-tab">
     <div class="nm-dashboard-container">

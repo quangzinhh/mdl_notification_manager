@@ -31,13 +31,13 @@ use core_privacy\local\request\contextlist;
 use core_privacy\local\request\userlist;
 use core_privacy\local\request\writer;
 
-defined('MOODLE_INTERNAL') || die();
-
+/**
+ * Privacy provider for local_notification_manager.
+ */
 class provider implements
     \core_privacy\local\metadata\provider,
-    \core_privacy\local\request\plugin\provider,
-    \core_privacy\local\request\core_userlist_provider {
-
+    \core_privacy\local\request\core_userlist_provider,
+    \core_privacy\local\request\plugin\provider {
     /**
      * Returns meta data about this plugin.
      *
@@ -118,16 +118,15 @@ class provider implements
 
         $userid = $contextlist->get_user()->id;
 
-        list($contextsql, $contextparams) = $DB->get_in_or_equal($contextlist->get_contextids(), SQL_PARAMS_NAMED);
-        
+        [$contextsql, $contextparams] = $DB->get_in_or_equal($contextlist->get_contextids(), SQL_PARAMS_NAMED);
+
         $sql = "SELECT t.*, c.id as contextid
                   FROM {local_notification_manager_trash} t
                   JOIN {context} c ON c.instanceid = t.useridto AND c.contextlevel = :contextlevel
-                 WHERE t.useridto = :userid 
+                 WHERE t.useridto = :userid
                    AND c.id {$contextsql}";
-                   
+
         $params = array_merge(['userid' => $userid, 'contextlevel' => CONTEXT_USER], $contextparams);
-        
         $rs = $DB->get_recordset_sql($sql, $params);
         foreach ($rs as $record) {
             $context = \context::instance_by_id($record->contextid);
@@ -139,13 +138,13 @@ class provider implements
                 'timedeleted' => \core_privacy\local\request\transform::datetime($record->timedeleted),
                 'content' => $record->rawdata,
             ];
-            
+
             // Subcontext folder path inside the zip.
             $subcontext = [
                 get_string('tab_trash', 'local_notification_manager'),
-                $record->id
+                $record->id,
             ];
-            
+
             writer::with_context($context)->export_data($subcontext, $data);
         }
         $rs->close();

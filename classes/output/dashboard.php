@@ -24,15 +24,22 @@
 
 namespace local_notification_manager\output;
 
-defined('MOODLE_INTERNAL') || die();
-
 use renderable;
 use renderer_base;
 use templatable;
 
+/**
+ * Dashboard output class.
+ */
 class dashboard implements renderable, templatable {
+    /** @var string $timerange Time range filter. */
     private string $timerange;
 
+    /**
+     * Constructor.
+     *
+     * @param string $timerange
+     */
     public function __construct(string $timerange = '30') {
         $validranges = ['7', '30', '90', 'all'];
         if (!in_array($timerange, $validranges)) {
@@ -41,6 +48,12 @@ class dashboard implements renderable, templatable {
         $this->timerange = $timerange;
     }
 
+    /**
+     * Export data for template.
+     *
+     * @param renderer_base $output
+     * @return array
+     */
     public function export_for_template(renderer_base $output): array {
         global $DB, $PAGE;
 
@@ -62,7 +75,7 @@ class dashboard implements renderable, templatable {
                 'analytic_read' => get_string('analytic_read', 'local_notification_manager'),
                 'analytic_unread' => get_string('analytic_unread', 'local_notification_manager'),
                 'analytic_top_users' => get_string('analytic_top_users', 'local_notification_manager'),
-                'analytic_popular_types' => get_string('analytic_popular_types', 'local_notification_manager')
+                'analytic_popular_types' => get_string('analytic_popular_types', 'local_notification_manager'),
             ]
         ];
 
@@ -78,55 +91,55 @@ class dashboard implements renderable, templatable {
 
         // 1. Engagement Analytics
         $sqlwhere = $where ? "WHERE $where" : "";
-        $engagementsql = "SELECT COUNT(id) as total, 
+        $engagementsql = "SELECT COUNT(id) as total,
                           SUM(CAST(CASE WHEN timeread IS NULL THEN 1 ELSE 0 END AS INTEGER)) as unread,
                           SUM(CAST(CASE WHEN timeread IS NOT NULL THEN 1 ELSE 0 END AS INTEGER)) as read
                           FROM {notifications} $sqlwhere";
         
-        // Moodle DML does not support standard SUM CASE well across all DBs smoothly, so it's safer to just fetch the totals separately or use a simpler pivot, or get them with two count queries.
-        $total_notifications = $DB->count_records_select('notifications', $where, $params);
+        // Moodle DML does not support standard SUM CASE well across all DBs smoothly.
+        $totalnotifications = $DB->count_records_select('notifications', $where, $params);
         
-        $unread_where = $where ? "$where AND timeread IS NULL" : "timeread IS NULL";
-        $unread_notifications = $DB->count_records_select('notifications', $unread_where, $params);
+        $unreadwhere = $where ? "$where AND timeread IS NULL" : "timeread IS NULL";
+        $unreadnotifications = $DB->count_records_select('notifications', $unreadwhere, $params);
         
-        $read_notifications = $total_notifications - $unread_notifications;
+        $readnotifications = $totalnotifications - $unreadnotifications;
         
-        $unread_rate = 0;
-        if ($total_notifications > 0) {
-            $unread_rate = round(($unread_notifications / $total_notifications) * 100, 1);
+        $unreadrate = 0;
+        if ($totalnotifications > 0) {
+            $unreadrate = round(($unreadnotifications / $totalnotifications) * 100, 1);
         }
 
         $data['engagement'] = [
-            'total' => $total_notifications,
-            'read' => $read_notifications,
-            'unread' => $unread_notifications,
-            'unread_rate' => $unread_rate,
-            'read_rate' => 100 - $unread_rate,
-            'chart_arc' => $unread_rate * 3.6 // 360 degrees
+            'total' => $totalnotifications,
+            'read' => $readnotifications,
+            'unread' => $unreadnotifications,
+            'unread_rate' => $unreadrate,
+            'read_rate' => 100 - $unreadrate,
+            'chart_arc' => $unreadrate * 3.6, // 360 degrees.
         ];
 
         // 2. User Analytics (Top 5)
         // Group by user, count, order by count desc
         $usersqlwhere = $sqlwhere ? "$sqlwhere AND useridto > 0" : "WHERE useridto > 0";
-        $usersql = "SELECT useridto, COUNT(id) as notifcount 
-                    FROM {notifications} 
-                    $usersqlwhere 
-                    GROUP BY useridto 
+        $usersql = "SELECT useridto, COUNT(id) as notifcount
+                    FROM {notifications}
+                    $usersqlwhere
+                    GROUP BY useridto
                     ORDER BY notifcount DESC";
         $topuserrecords = $DB->get_records_sql($usersql, $params, 0, 5);
         $topusers = [];
         
         if (!empty($topuserrecords)) {
             $userids = array_keys($topuserrecords);
-            list($userinsql, $userparams) = $DB->get_in_or_equal($userids);
-            // Fetch users using recordset for memory safety
+            [$userinsql, $userparams] = $DB->get_in_or_equal($userids);
+            // Fetch users using recordset for memory safety.
             $rs = $DB->get_recordset_select('user', "id $userinsql", $userparams, '', 'id, firstname, lastname, picture, email');
             $users = [];
             foreach ($rs as $u) {
                 $users[$u->id] = $u;
             }
-            $rs->close();            
-            // Generate user details
+            $rs->close();
+            // Generate user details.
             foreach ($topuserrecords as $userid => $record) {
                 if (isset($users[$userid])) {
                     $u = $users[$userid];
@@ -136,7 +149,7 @@ class dashboard implements renderable, templatable {
                         'userid' => $userid,
                         'fullname' => fullname($u),
                         'count' => $record->notifcount,
-                        'profileimageurl' => $userpic->get_url($PAGE, $output)->out(false)
+                        'profileimageurl' => $userpic->get_url($PAGE, $output)->out(false),
                     ];
                 }
             }
@@ -145,10 +158,10 @@ class dashboard implements renderable, templatable {
         $data['has_topusers'] = !empty($topusers);
 
         // 3. Notification Type Analytics Component Breakdown
-        $typesql = "SELECT component, COUNT(id) as notifcount 
-                    FROM {notifications} 
-                    $sqlwhere 
-                    GROUP BY component 
+        $typesql = "SELECT component, COUNT(id) as notifcount
+                    FROM {notifications}
+                    $sqlwhere
+                    GROUP BY component
                     ORDER BY notifcount DESC";
         $typerecords = $DB->get_records_sql($typesql, $params, 0, 10);
         $types = [];
@@ -166,15 +179,14 @@ class dashboard implements renderable, templatable {
             if ($maxtypecount > 0) {
                 $percent = round(($record->notifcount / $maxtypecount) * 100, 1);
             }
-            // Generate a random-ish color based on component name for the bar
+            // Generate a random-ish color based on component name for the bar.
             $hash = md5($component);
             $color = '#' . substr($hash, 0, 6);
-            
             $types[] = [
                 'component' => $component,
                 'count' => $record->notifcount,
                 'percent' => $percent,
-                'color' => $color
+                'color' => $color,
             ];
         }
         $data['populartypes'] = $types;

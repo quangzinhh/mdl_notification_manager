@@ -21,19 +21,21 @@
  * @copyright  2024 Developer
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-defined('MOODLE_INTERNAL') || die();
-
+/**
+ * Upgrade function for local_notification_manager.
+ *
+ * @param int $oldversion The old version of the plugin.
+ * @return bool True if successful.
+ */
 function xmldb_local_notification_manager_upgrade($oldversion) {
     global $DB;
 
     $dbman = $DB->get_manager();
 
     if ($oldversion < 2024040606) {
-
         $table = new xmldb_table('local_notification_manager_trash');
 
         if (!$dbman->table_exists($table)) {
-
             // Adding fields to table local_notification_manager_trash.
             $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
             $table->add_field('originalid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');

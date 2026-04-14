@@ -24,19 +24,33 @@
 
 namespace local_notification_manager\output;
 
-defined('MOODLE_INTERNAL') || die();
-
 use renderable;
 use renderer_base;
 use templatable;
 
+/**
+ * Trash output class.
+ */
 class trash implements renderable, templatable {
+    /** @var int $userid The user id. */
     private int $userid;
+    /** @var string $userlabel The user label. */
     private string $userlabel;
+    /** @var int $page The page number. */
     private int $page;
+    /** @var string $search Search query. */
     private string $search;
+    /** @var int $perpage Items per page. */
     private int $perpage = 20;
 
+    /**
+     * Constructor for trash class.
+     *
+     * @param int $userid
+     * @param string $userlabel
+     * @param int $page
+     * @param string $search
+     */
     public function __construct(int $userid = 0, string $userlabel = '', int $page = 0, string $search = '') {
         $this->userid = $userid;
         $this->userlabel = $userlabel;
@@ -44,6 +58,12 @@ class trash implements renderable, templatable {
         $this->search = trim($search);
     }
 
+    /**
+     * Export data for template.
+     *
+     * @param renderer_base $output
+     * @return array
+     */
     public function export_for_template(renderer_base $output): array {
         global $DB;
 
@@ -53,8 +73,7 @@ class trash implements renderable, templatable {
             'userid' => $this->userid,
             'userlabel' => s($this->userlabel),
             'search' => s($this->search),
-            
-            // Strings
+            // Strings.
             'str' => [
                 'searchusers' => get_string('searchusers', 'local_notification_manager'),
                 'pleaseselectuser' => get_string('pleaseselectuser', 'local_notification_manager'),
@@ -66,7 +85,7 @@ class trash implements renderable, templatable {
                 'delete_selected_permanently' => get_string('delete_selected_permanently', 'local_notification_manager'),
                 'restore_selected' => get_string('restore_selected', 'local_notification_manager'),
                 'no_trash_notifications' => get_string('no_trash_notifications', 'local_notification_manager'),
-                'select_all' => get_string('select_all', 'local_notification_manager')
+                'select_all' => get_string('select_all', 'local_notification_manager'),
             ]
         ];
 
@@ -81,7 +100,7 @@ class trash implements renderable, templatable {
             $params['useridto'] = $this->userid;
             $data['is_user_selected'] = true;
         } else {
-            $data['notificationsfor'] = get_string('tab_trash', 'local_notification_manager'); // Or something generic
+            $data['notificationsfor'] = get_string('tab_trash', 'local_notification_manager'); // Or something generic.
             $data['is_user_selected'] = false;
         }
 
@@ -100,14 +119,14 @@ class trash implements renderable, templatable {
 
         $totalcountsql = "SELECT COUNT(t.id) FROM {local_notification_manager_trash} t $sqlwhere";
         $totalcount = $DB->count_records_sql($totalcountsql, $params);
-        
+
         $offset = $this->page * $this->perpage;
         $sql = "SELECT t.*, u.firstname, u.lastname, u.id as uuid
                 FROM {local_notification_manager_trash} t
                 LEFT JOIN {user} u ON u.id = t.useridto
                 $sqlwhere
                 ORDER BY t.timedeleted DESC";
-                
+
         $records = $DB->get_records_sql($sql, $params, $offset, $this->perpage);
 
         $notifications = [];
@@ -117,7 +136,7 @@ class trash implements renderable, templatable {
             if ($raw) {
                 $messagepreview = format_text($raw->smallmessage ?? $raw->fullmessage, FORMAT_HTML);
             }
-            
+
             $uname = 'Unknown';
             if (!empty($record->uuid)) {
                 $u = new \stdClass();
@@ -132,7 +151,7 @@ class trash implements renderable, templatable {
                 'message' => $messagepreview,
                 'component' => $record->component,
                 'timedeleted' => userdate($record->timedeleted),
-                'username' => $uname
+                'username' => $uname,
             ];
         }
 
@@ -142,7 +161,7 @@ class trash implements renderable, templatable {
         $baseurl = new \moodle_url('/local/notification_manager/trash.php', [
             'userid' => $this->userid,
             'userlabel' => $this->userlabel,
-            'search' => $this->search
+            'search' => $this->search,
         ]);
         $data['pagingbar'] = $output->paging_bar($totalcount, $this->page, $this->perpage, $baseurl->out(false), 'page');
 

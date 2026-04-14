@@ -24,8 +24,9 @@
 
 namespace local_notification_manager\output;
 
-defined('MOODLE_INTERNAL') || die();
-
+/**
+ * Renderer for local_notification_manager.
+ */
 class renderer extends \plugin_renderer_base {
     /**
      * Render create meeting page content.

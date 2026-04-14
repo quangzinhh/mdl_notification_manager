@@ -21,6 +21,37 @@
 
     @copyright 2024 Developer
     @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+
+    Example context (json):
+    {
+        "userid": 1,
+        "sesskey": "xxxxx",
+        "str": {
+            "tab_trash": "Trash",
+            "searchusers": "Search users",
+            "search": "Search",
+            "restore_selected": "Restore selected",
+            "delete_selected_permanently": "Delete permanently",
+            "select_all": "Select all",
+            "col_subject": "Subject",
+            "col_message": "Message",
+            "col_component": "Component",
+            "col_timedeleted": "Time deleted",
+            "no_trash_notifications": "No notifications in trash"
+        },
+        "has_notifications": true,
+        "notificationsfor": "Trash for User",
+        "notifications": [
+            {
+                "id": 1,
+                "username": "admin",
+                "subject": "Hello",
+                "message": "World",
+                "component": "moodle",
+                "timedeleted": "2024-01-01"
+            }
+        ]
+    }
 }}
 <div class="local-notification-trash" id="local-notification-trash">
     <div class="card mb-4">

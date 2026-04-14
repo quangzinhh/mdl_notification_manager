@@ -63,7 +63,7 @@ define([
 
             ajax.call([{
                 methodname: 'local_notification_manager_search_users',
-                args: { q: term }
+                args: {q: term}
             }])[0].done(function(data) {
                 if (!data || !Array.isArray(data.items)) {
                     $datalist.empty();
@@ -88,7 +88,7 @@ define([
         });
     };
 
-    var initTable = function(userid, sesskey) {
+    var initTable = function(userid) {
         var $checkAll = $('#nm-check-all');
         var $checkItems = $('.nm-check-item');
         var $btnSoftDelete = $('#nm-btn-soft-delete');
@@ -111,10 +111,13 @@ define([
 
         var handleDeleteAction = function(actionType) {
             str.get_strings([
-                { key: 'confirm', component: 'moodle' },
-                { key: actionType === 'soft' ? 'confirm_move_trash' : 'confirm_delete_permanently', component: 'local_notification_manager' },
-                { key: 'yes', component: 'moodle' },
-                { key: 'no', component: 'moodle' }
+                {key: 'confirm', component: 'moodle'},
+                {
+                    key: actionType === 'soft' ? 'confirm_move_trash' : 'confirm_delete_permanently',
+                    component: 'local_notification_manager'
+                },
+                {key: 'yes', component: 'moodle'},
+                {key: 'no', component: 'moodle'}
             ]).done(function(s) {
                 notification.confirm(
                     s[0], // Confirm
@@ -140,7 +143,7 @@ define([
                             } else {
                                 notification.alert('Error', response.message);
                             }
-                        }).fail(function(ex) {
+                        }).fail(function() {
                             notification.alert('Error', 'Failed to communicate with the server.');
                         });
                     }
@@ -148,15 +151,21 @@ define([
             });
         };
 
-        $btnSoftDelete.on('click', function(e) { e.preventDefault(); handleDeleteAction('soft'); });
-        $btnHardDelete.on('click', function(e) { e.preventDefault(); handleDeleteAction('hard'); });
+        $btnSoftDelete.on('click', function(e) {
+            e.preventDefault();
+            handleDeleteAction('soft');
+        });
+        $btnHardDelete.on('click', function(e) {
+            e.preventDefault();
+            handleDeleteAction('hard');
+        });
     };
 
     return {
         init: function(config) {
             initUserSelect();
             if (config.userid > 0) {
-                initTable(config.userid, config.sesskey);
+                initTable(config.userid);
             }
         }
     };

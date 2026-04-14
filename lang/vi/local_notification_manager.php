@@ -77,7 +77,7 @@ $string['no_notifications_selected'] = 'Chưa chọn thông báo nào.';
 $string['unknown_action'] = 'Hành động không xác định.';
 $string['no_matching_notifications'] = 'Không tìm thấy thông báo nào phù hợp cho người dùng này.';
 
-// Privacy strings
+// Privacy strings.
 $string['privacy:metadata:trash'] = 'Thùng rác quản lý thông báo lưu trữ thông tin chi tiết về các thông báo đã bị xóa tạm để có thể khôi phục lại.';
 $string['privacy:metadata:trash:useridto'] = 'ID của người dùng mà thông báo đã được gửi đến.';
 $string['privacy:metadata:trash:subject'] = 'Tiêu đề của thông báo.';

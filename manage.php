@@ -46,7 +46,7 @@ $params = [
     'userlabel' => $userlabel,
     'page' => $page,
     'search' => $search,
-    'filter' => $filter
+    'filter' => $filter,
 ];
 
 $PAGE->set_url(new moodle_url('/local/notification_manager/manage.php', $params));
@@ -61,9 +61,21 @@ echo $renderer->header();
 echo $OUTPUT->heading(get_string('tab_manage', 'local_notification_manager'));
 
 $tabs = [
-    new tabobject('dashboard', new moodle_url('/local/notification_manager/index.php'), get_string('tab_dashboard', 'local_notification_manager')),
-    new tabobject('manage', new moodle_url('/local/notification_manager/manage.php'), get_string('tab_manage', 'local_notification_manager')),
-    new tabobject('trash', new moodle_url('/local/notification_manager/trash.php'), get_string('tab_trash', 'local_notification_manager'))
+    new tabobject(
+        'dashboard',
+        new moodle_url('/local/notification_manager/index.php'),
+        get_string('tab_dashboard', 'local_notification_manager')
+    ),
+    new tabobject(
+        'manage',
+        new moodle_url('/local/notification_manager/manage.php'),
+        get_string('tab_manage', 'local_notification_manager')
+    ),
+    new tabobject(
+        'trash',
+        new moodle_url('/local/notification_manager/trash.php'),
+        get_string('tab_trash', 'local_notification_manager')
+    ),
 ];
 echo $OUTPUT->tabtree($tabs, 'manage');
 

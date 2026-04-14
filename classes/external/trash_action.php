@@ -30,10 +30,10 @@ use core_external\external_multiple_structure;
 use core_external\external_single_structure;
 use core_external\external_value;
 
-defined('MOODLE_INTERNAL') || die();
-
+/**
+ * External api to handle trash actions.
+ */
 class trash_action extends external_api {
-
     /**
      * Returns description of method parameters
      *
@@ -82,8 +82,8 @@ class trash_action extends external_api {
             ];
         }
 
-        list($inorsql, $sqlparams) = $DB->get_in_or_equal($trashids, SQL_PARAMS_NAMED, 'trash');
-        
+        [$inorsql, $sqlparams] = $DB->get_in_or_equal($trashids, SQL_PARAMS_NAMED, 'trash');
+
         $sql = "id $inorsql";
         if ($userid > 0) {
             $sql .= " AND useridto = :useridto";
@@ -98,12 +98,12 @@ class trash_action extends external_api {
                     $rs = $DB->get_recordset_select('local_notification_manager_trash', $sql, $sqlparams);
                     foreach ($rs as $rec) {
                         $raw = (array)json_decode($rec->rawdata);
-                        unset($raw['id']); 
+                        unset($raw['id']);
                         $DB->insert_record('notifications', (object)$raw);
                     }
                     $rs->close();
                     $DB->delete_records_select('local_notification_manager_trash', $sql, $sqlparams);
-                    
+
                     return [
                         'success' => true,
                         'count' => $count,
@@ -111,7 +111,7 @@ class trash_action extends external_api {
                     ];
                 } else if ($action === 'hard') {
                     $DB->delete_records_select('local_notification_manager_trash', $sql, $sqlparams);
-                    
+
                     return [
                         'success' => true,
                         'count' => $count,
@@ -129,7 +129,7 @@ class trash_action extends external_api {
                     'message' => get_string('error_delete', 'local_notification_manager') . ' ' . $e->getMessage(),
                 ];
             }
-        } 
+        }
 
         return [
             'success' => false,

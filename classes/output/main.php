@@ -24,21 +24,43 @@
 
 namespace local_notification_manager\output;
 
-defined('MOODLE_INTERNAL') || die();
-
 use renderable;
 use renderer_base;
 use templatable;
 
+/**
+ * Main output class.
+ */
 class main implements renderable, templatable {
+    /** @var int $userid The user id. */
     private int $userid;
+    /** @var string $userlabel The user label. */
     private string $userlabel;
+    /** @var int $page The page number. */
     private int $page;
+    /** @var string $search Search query. */
     private string $search;
+    /** @var string $filter Filter type definition. */
     private string $filter;
+    /** @var int $perpage Items per page. */
     private int $perpage = 20;
 
-    public function __construct(int $userid = 0, string $userlabel = '', int $page = 0, string $search = '', string $filter = 'all') {
+    /**
+     * Constructor for main class.
+     *
+     * @param int $userid
+     * @param string $userlabel
+     * @param int $page
+     * @param string $search
+     * @param string $filter
+     */
+    public function __construct(
+        int $userid = 0,
+        string $userlabel = '',
+        int $page = 0,
+        string $search = '',
+        string $filter = 'all'
+    ) {
         $this->userid = $userid;
         $this->userlabel = $userlabel;
         $this->page = max(0, $page);
@@ -46,6 +68,12 @@ class main implements renderable, templatable {
         $this->filter = $filter;
     }
 
+    /**
+     * Export data for template.
+     *
+     * @param renderer_base $output
+     * @return array
+     */
     public function export_for_template(renderer_base $output): array {
         global $DB, $USER;
 
@@ -58,8 +86,7 @@ class main implements renderable, templatable {
             'filter_all_selected' => ($this->filter === 'all'),
             'filter_read_selected' => ($this->filter === 'read'),
             'filter_unread_selected' => ($this->filter === 'unread'),
-            
-            // Strings
+            // Strings.
             'str' => [
                 'searchusers' => get_string('searchusers', 'local_notification_manager'),
                 'pleaseselectuser' => get_string('pleaseselectuser', 'local_notification_manager'),
@@ -74,7 +101,7 @@ class main implements renderable, templatable {
                 'col_timeread' => get_string('col_timeread', 'local_notification_manager'),
                 'delete_selected' => get_string('delete_selected', 'local_notification_manager'),
                 'no_notifications' => get_string('no_notifications', 'local_notification_manager'),
-                'select_all' => get_string('select_all', 'local_notification_manager')
+                'select_all' => get_string('select_all', 'local_notification_manager'),
             ]
         ];
 
@@ -105,15 +132,15 @@ class main implements renderable, templatable {
             $sqlwhere = implode(' AND ', $where);
 
             $totalcount = $DB->count_records_select('notifications', $sqlwhere, $params);
-            
+
             $offset = $this->page * $this->perpage;
             $records = $DB->get_records_select(
-                'notifications', 
-                $sqlwhere, 
-                $params, 
-                'timecreated DESC', 
-                '*', 
-                $offset, 
+                'notifications',
+                $sqlwhere,
+                $params,
+                'timecreated DESC',
+                '*',
+                $offset,
                 $this->perpage
             );
 
@@ -126,7 +153,7 @@ class main implements renderable, templatable {
                     'component' => $record->component,
                     'timecreated' => userdate($record->timecreated),
                     'timeread' => $record->timeread ? userdate($record->timeread) : '-',
-                    'is_read' => !empty($record->timeread)
+                    'is_read' => !empty($record->timeread),
                 ];
             }
 
@@ -137,7 +164,7 @@ class main implements renderable, templatable {
                 'userid' => $this->userid,
                 'userlabel' => $this->userlabel,
                 'search' => $this->search,
-                'filter' => $this->filter
+                'filter' => $this->filter,
             ]);
             $data['pagingbar'] = $output->paging_bar($totalcount, $this->page, $this->perpage, $baseurl->out(false), 'page');
         }

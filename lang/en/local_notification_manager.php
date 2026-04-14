@@ -77,7 +77,7 @@ $string['no_notifications_selected'] = 'No notifications selected.';
 $string['unknown_action'] = 'Unknown action.';
 $string['no_matching_notifications'] = 'No matching notifications found for this user.';
 
-// Privacy strings
+// Privacy strings.
 $string['privacy:metadata:trash'] = 'The notification manager trash stores details about soft-deleted notifications for restoration purposes.';
 $string['privacy:metadata:trash:useridto'] = 'The ID of the user that the notification was sent to.';
 $string['privacy:metadata:trash:subject'] = 'The subject line of the notification.';

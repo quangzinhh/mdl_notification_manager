@@ -21,6 +21,44 @@
 
     @copyright 2024 Developer
     @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+
+    Example context (json):
+    {
+        "userid": 1,
+        "sesskey": "xxxxx",
+        "str": {
+            "dashboardtitle": "Dashboard",
+            "searchusers": "Search users",
+            "filter_all": "All",
+            "filter_read": "Read",
+            "filter_unread": "Unread",
+            "search": "Search",
+            "move_to_trash": "Move to trash",
+            "delete_permanently": "Delete permanently",
+            "select_all": "Select all",
+            "col_subject": "Subject",
+            "col_message": "Message",
+            "col_component": "Component",
+            "col_timecreated": "Time created",
+            "col_timeread": "Time read",
+            "no_notifications": "No notifications",
+            "pleaseselectuser": "Please select user"
+        },
+        "is_user_selected": true,
+        "notificationsfor": "Notifications for User",
+        "has_notifications": true,
+        "notifications": [
+            {
+                "id": 1,
+                "is_read": false,
+                "subject": "Hello",
+                "message": "World",
+                "component": "moodle",
+                "timecreated": "2024-01-01",
+                "timeread": "Never"
+            }
+        ]
+    }
 }}
 <div class="local-notification-dashboard" id="local-notification-dashboard">
     <div class="card mb-4">
